@@ -15,27 +15,12 @@ const detect = (socket) => {
     camera.read(function(err, im) {
       if (err) throw err;
 
-      const lower_hsv_threshold = [170, 100, 0]
-      const upper_hsv_threshold = [180, 255, 255]
+      const lower_hsv_threshold = [20, 50, 50]
+      const upper_hsv_threshold = [100, 255, 255]
 
       im.convertHSVscale()
       im.inRange(lower_hsv_threshold, upper_hsv_threshold)
 
-      let contours = im.findContours()
-      let data = {
-        contours: [],
-        size: contours.size()
-      }
-
-      for (let c = 0; c < contours.size(); c++) {
-        data.contours[c] = []
-        for (let i = 0; i < contours.cornerCount(c); i++) {
-          let point = contours.point(c, i)
-          data.contours[c][i] = { x: point.x, y: point.y }
-        }
-      }
-
-      // im.rectangle([face.x, face.y], [face.width, face.height], rectColor, rectThickness);
       socket.emit('frame', { buffer: im.toBuffer() })
     });
   }, camInterval);
