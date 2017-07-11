@@ -1,16 +1,11 @@
 const cv = require('opencv');
-
-// camera properties
 const camWidth = 320;
 const camHeight = 240;
 const camFps = 10;
 const camInterval = 1000 / camFps;
-
-// face detection properties
 const rectColor = [0, 255, 0];
 const rectThickness = 2;
 
-// initialize camera
 let camera = new cv.VideoCapture(0);
 camera.setWidth(camWidth);
 camera.setHeight(camHeight);
@@ -20,16 +15,28 @@ const detect = (socket) => {
     camera.read(function(err, im) {
       if (err) throw err;
 
-      im.detectObject('./node_modules/opencv/data/haarcascade_frontalface_alt2.xml', {}, function(err, faces) {
-        if (err) throw err;
+      const lower_hsv_threshold = [170, 100, 0]
+      const upper_hsv_threshold = [180, 255, 255]
 
-        for (let i = 0; i < faces.length; i++) {
-          face = faces[i];
-          im.rectangle([face.x, face.y], [face.width, face.height], rectColor, rectThickness);
+      im.convertHSVscale()
+      im.inRange(lower_hsv_threshold, upper_hsv_threshold)
+
+      let contours = im.findContours()
+      let data = {
+        contours: [],
+        size: contours.size()
+      }
+
+      for (let c = 0; c < contours.size(); c++) {
+        data.contours[c] = []
+        for (let i = 0; i < contours.cornerCount(c); i++) {
+          let point = contours.point(c, i)
+          data.contours[c][i] = { x: point.x, y: point.y }
         }
+      }
 
-        socket.emit('frame', { buffer: im.toBuffer() });
-      });
+      // im.rectangle([face.x, face.y], [face.width, face.height], rectColor, rectThickness);
+      socket.emit('frame', { buffer: im.toBuffer() })
     });
   }, camInterval);
 };
