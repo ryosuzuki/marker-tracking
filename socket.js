@@ -1,13 +1,13 @@
 const cv = require('opencv');
 const _ = require('lodash')
-const camWidth = 320;
-const camHeight = 240;
+const camWidth = 720;
+const camHeight = 400;
 const camFps = 10;
 const camInterval = 1000 / camFps;
 const rectColor = [0, 255, 0];
 const rectThickness = 2;
 
-let camera = new cv.VideoCapture(1)
+let camera = new cv.VideoCapture(0)
 camera.setWidth(camWidth);
 camera.setHeight(camHeight);
 
