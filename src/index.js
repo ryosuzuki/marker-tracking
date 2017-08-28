@@ -3,7 +3,6 @@ const canvas = document.getElementById('canvas-video');
 const context = canvas.getContext('2d');
 const img = new Image();
 
-// show loading notice
 context.fillStyle = '#333';
 context.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 

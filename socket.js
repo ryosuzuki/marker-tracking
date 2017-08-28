@@ -15,8 +15,8 @@ const detect = (socket) => {
     camera.read(function(err, im) {
       if (err) throw err;
 
-      const lower_hsv_threshold = [20, 50, 50]
-      const upper_hsv_threshold = [100, 255, 255]
+      const lower_hsv_threshold = [0, 0, 0]
+      const upper_hsv_threshold = [180, 255, 100]
 
       im.convertHSVscale()
       im.inRange(lower_hsv_threshold, upper_hsv_threshold)
