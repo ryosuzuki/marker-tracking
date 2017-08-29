@@ -12,7 +12,14 @@ socket.on('frame', function (data) {
   const base64String = btoa(str);
 
   img.onload = function () {
-    context.drawImage(this, 0, 0, canvas.width, canvas.height);
-  };
-  img.src = 'data:image/png;base64,' + base64String;
+    context.drawImage(this, 0, 0, canvas.width, canvas.height)
+  }
+  img.src = 'data:image/png;base64,' + base64String
+
+  let points = data.points.map((point) => {
+    return { x: Math.floor(point.x), y: Math.floor(point.y) }
+  })
+
+  $('#points').text(JSON.stringify(points, 2, null))
+
 });
