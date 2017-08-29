@@ -6,12 +6,17 @@ const img = new Image();
 context.fillStyle = '#333';
 context.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
+
+
 $('#button').click((event) => {
-  let data = JSON.stringify({ x: 10, y: 10 })
+  if (window.markers.length === 0) return
+  let current = markers[0]
+  let data = JSON.stringify(current)
   $.ajax({
     type: 'POST',
     url: '/move',
     dataType: 'JSON',
+    contentType: 'application/json',
     data: data
   })
 })
@@ -26,6 +31,7 @@ socket.on('frame', function (data) {
   }
   img.src = 'data:image/png;base64,' + base64String
 
+  window.markers = data.markers
   $('#markers').text(JSON.stringify(data.markers, 2, null))
 
 });
