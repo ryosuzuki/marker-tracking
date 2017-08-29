@@ -6,6 +6,16 @@ const img = new Image();
 context.fillStyle = '#333';
 context.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
+$('#button').click((event) => {
+  let data = JSON.stringify({ x: 10, y: 10 })
+  $.ajax({
+    type: 'POST',
+    url: '/move',
+    dataType: 'JSON',
+    data: data
+  })
+})
+
 socket.on('frame', function (data) {
   const uint8Arr = new Uint8Array(data.buffer);
   const str = String.fromCharCode.apply(null, uint8Arr);
@@ -16,10 +26,14 @@ socket.on('frame', function (data) {
   }
   img.src = 'data:image/png;base64,' + base64String
 
-  let points = data.points.map((point) => {
-    return { x: Math.floor(point.x), y: Math.floor(point.y) }
-  })
-
-  $('#points').text(JSON.stringify(points, 2, null))
+  $('#markers').text(JSON.stringify(data.markers, 2, null))
 
 });
+
+socket.on('rect', (data) => {
+  let points = data.rect.map((point) => {
+    return { x: Math.floor(point.x), y: Math.floor(point.y) }
+  })
+  $('#rect').text(JSON.stringify(points, 2, null))
+})
+
